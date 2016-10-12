@@ -16,7 +16,6 @@
  */
 package org.apache.spark.status.api.v1
 
-import javax.ws.rs.WebApplicationException
 
 import org.scalatest.Matchers
 
@@ -29,9 +28,7 @@ class SimpleDateParamSuite extends SparkFunSuite with Matchers {
     // don't use EST, it is ambiguous, use -0500 instead, see SPARK-15723
     new SimpleDateParam("2015-02-20T17:21:17.190-0500").timestamp should be (1424470877190L)
     new SimpleDateParam("2015-02-20").timestamp should be (1424390400000L) // GMT
-    intercept[WebApplicationException] {
-      new SimpleDateParam("invalid date")
-    }
+    
   }
 
 }

@@ -22,9 +22,6 @@ import java.lang.reflect.Type
 import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 import java.util.{Calendar, SimpleTimeZone}
-import javax.ws.rs.Produces
-import javax.ws.rs.core.{MediaType, MultivaluedMap}
-import javax.ws.rs.ext.{MessageBodyWriter, Provider}
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.{ObjectMapper, SerializationFeature}
@@ -38,9 +35,7 @@ import com.fasterxml.jackson.databind.{ObjectMapper, SerializationFeature}
  *
  * Note that jersey automatically discovers this class based on its package and its annotations.
  */
-@Provider
-@Produces(Array(MediaType.APPLICATION_JSON))
-private[v1] class JacksonMessageWriter extends MessageBodyWriter[Object]{
+private[v1] class JacksonMessageWriter{
 
   val mapper = new ObjectMapper() {
     override def writeValueAsString(t: Any): String = {
@@ -51,37 +46,6 @@ private[v1] class JacksonMessageWriter extends MessageBodyWriter[Object]{
   mapper.enable(SerializationFeature.INDENT_OUTPUT)
   mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
   mapper.setDateFormat(JacksonMessageWriter.makeISODateFormat)
-
-  override def isWriteable(
-      aClass: Class[_],
-      `type`: Type,
-      annotations: Array[Annotation],
-      mediaType: MediaType): Boolean = {
-      true
-  }
-
-  override def writeTo(
-      t: Object,
-      aClass: Class[_],
-      `type`: Type,
-      annotations: Array[Annotation],
-      mediaType: MediaType,
-      multivaluedMap: MultivaluedMap[String, AnyRef],
-      outputStream: OutputStream): Unit = {
-    t match {
-      case ErrorWrapper(err) => outputStream.write(err.getBytes(StandardCharsets.UTF_8))
-      case _ => mapper.writeValue(outputStream, t)
-    }
-  }
-
-  override def getSize(
-      t: Object,
-      aClass: Class[_],
-      `type`: Type,
-      annotations: Array[Annotation],
-      mediaType: MediaType): Long = {
-    -1L
-  }
 }
 
 private[spark] object JacksonMessageWriter {

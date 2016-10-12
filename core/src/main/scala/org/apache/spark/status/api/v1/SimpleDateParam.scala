@@ -18,9 +18,6 @@ package org.apache.spark.status.api.v1
 
 import java.text.{ParseException, SimpleDateFormat}
 import java.util.TimeZone
-import javax.ws.rs.WebApplicationException
-import javax.ws.rs.core.Response
-import javax.ws.rs.core.Response.Status
 
 private[v1] class SimpleDateParam(val originalValue: String) {
 
@@ -35,13 +32,7 @@ private[v1] class SimpleDateParam(val originalValue: String) {
         try {
           gmtDay.parse(originalValue).getTime()
         } catch {
-          case _: ParseException =>
-            throw new WebApplicationException(
-              Response
-                .status(Status.BAD_REQUEST)
-                .entity("Couldn't parse date: " + originalValue)
-                .build()
-            )
+          case _: ParseException => 0
         }
     }
   }

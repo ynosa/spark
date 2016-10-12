@@ -16,15 +16,8 @@
  */
 package org.apache.spark.status.api.v1
 
-import javax.ws.rs._
-import javax.ws.rs.core.MediaType
-
-@Produces(Array(MediaType.APPLICATION_JSON))
 private[v1] class VersionResource(ui: UIRoot) {
-
-  @GET
   def getVersionInfo(): VersionInfo = new VersionInfo(
     org.apache.spark.SPARK_VERSION
   )
-
 }

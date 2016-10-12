@@ -17,8 +17,6 @@
 package org.apache.spark.status.api.v1
 
 import java.util.{Arrays, Date, List => JList}
-import javax.ws.rs.{GET, Produces, QueryParam}
-import javax.ws.rs.core.MediaType
 
 import org.apache.spark.scheduler.{AccumulableInfo => InternalAccumulableInfo, StageInfo}
 import org.apache.spark.ui.SparkUI
@@ -26,11 +24,9 @@ import org.apache.spark.ui.jobs.UIData.{StageUIData, TaskUIData}
 import org.apache.spark.ui.jobs.UIData.{InputMetricsUIData => InternalInputMetrics, OutputMetricsUIData => InternalOutputMetrics, ShuffleReadMetricsUIData => InternalShuffleReadMetrics, ShuffleWriteMetricsUIData => InternalShuffleWriteMetrics, TaskMetricsUIData => InternalTaskMetrics}
 import org.apache.spark.util.Distribution
 
-@Produces(Array(MediaType.APPLICATION_JSON))
 private[v1] class AllStagesResource(ui: SparkUI) {
-
-  @GET
-  def stageList(@QueryParam("status") statuses: JList[StageStatus]): Seq[StageData] = {
+  
+  def stageList( statuses: JList[StageStatus]): Seq[StageData] = {
     val listener = ui.jobProgressListener
     val stageAndStatus = AllStagesResource.stagesAndStatus(ui)
     val adjStatuses = {

@@ -17,20 +17,16 @@
 package org.apache.spark.status.api.v1
 
 import java.util.{Arrays, Date, List => JList}
-import javax.ws.rs.{DefaultValue, GET, Produces, QueryParam}
-import javax.ws.rs.core.MediaType
 
 import org.apache.spark.deploy.history.ApplicationHistoryInfo
 
-@Produces(Array(MediaType.APPLICATION_JSON))
 private[v1] class ApplicationListResource(uiRoot: UIRoot) {
-
-  @GET
+  
   def appList(
-      @QueryParam("status") status: JList[ApplicationStatus],
-      @DefaultValue("2010-01-01") @QueryParam("minDate") minDate: SimpleDateParam,
-      @DefaultValue("3000-01-01") @QueryParam("maxDate") maxDate: SimpleDateParam,
-      @QueryParam("limit") limit: Integer)
+       status: JList[ApplicationStatus],
+       minDate: SimpleDateParam,
+       maxDate: SimpleDateParam,
+       limit: Integer)
   : Iterator[ApplicationInfo] = {
     val allApps = uiRoot.getApplicationInfoList
     val adjStatus = {

@@ -16,17 +16,13 @@
  */
 package org.apache.spark.status.api.v1
 
-import javax.ws.rs.{GET, Produces}
-import javax.ws.rs.core.MediaType
 
 import org.apache.spark.storage.{RDDInfo, StorageStatus, StorageUtils}
 import org.apache.spark.ui.SparkUI
 import org.apache.spark.ui.storage.StorageListener
 
-@Produces(Array(MediaType.APPLICATION_JSON))
 private[v1] class AllRDDResource(ui: SparkUI) {
-
-  @GET
+  
   def rddList(): Seq[RDDStorageInfo] = {
     val storageStatusList = ui.storageListener.activeStorageStatusList
     val rddInfos = ui.storageListener.rddInfoList

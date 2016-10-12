@@ -17,19 +17,15 @@
 package org.apache.spark.status.api.v1
 
 import java.util.{Arrays, Date, List => JList}
-import javax.ws.rs._
-import javax.ws.rs.core.MediaType
 
 import org.apache.spark.JobExecutionStatus
 import org.apache.spark.ui.SparkUI
 import org.apache.spark.ui.jobs.JobProgressListener
 import org.apache.spark.ui.jobs.UIData.JobUIData
 
-@Produces(Array(MediaType.APPLICATION_JSON))
 private[v1] class AllJobsResource(ui: SparkUI) {
-
-  @GET
-  def jobsList(@QueryParam("status") statuses: JList[JobExecutionStatus]): Seq[JobData] = {
+  
+  def jobsList(statuses: JList[JobExecutionStatus]): Seq[JobData] = {
     val statusToJobs: Seq[(JobExecutionStatus, Seq[JobUIData])] =
       AllJobsResource.getStatusToJobs(ui)
     val adjStatuses: JList[JobExecutionStatus] = {

@@ -26,9 +26,11 @@
   </parent>
 
   <groupId>org.apache.spark</groupId>
-  <artifactId>spark-core_2.11</artifactId>
+  <version>2.0.1-SNAPSHOT</version>
+  <artifactId>bnext-spark-core_2.11</artifactId>
   <properties>
     <sbt.project.name>core</sbt.project.name>
+    <dep.project.version>2.0.1</dep.project.version>
   </properties>
   <packaging>jar</packaging>
   <name>Spark Project Core</name>
@@ -62,22 +64,22 @@
     <dependency>
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-launcher_${scala.binary.version}</artifactId>
-      <version>${project.version}</version>
+      <version>${dep.project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-network-common_${scala.binary.version}</artifactId>
-      <version>${project.version}</version>
+      <version>${dep.project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-network-shuffle_${scala.binary.version}</artifactId>
-      <version>${project.version}</version>
+      <version>${dep.project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-unsafe_${scala.binary.version}</artifactId>
-      <version>${project.version}</version>
+      <version>${dep.project.version}</version>
     </dependency>
     <dependency>
       <groupId>net.java.dev.jets3t</groupId>
@@ -197,26 +199,6 @@
       <artifactId>json4s-jackson_${scala.binary.version}</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.glassfish.jersey.core</groupId>
-      <artifactId>jersey-client</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.glassfish.jersey.core</groupId>
-      <artifactId>jersey-common</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.glassfish.jersey.core</groupId>
-      <artifactId>jersey-server</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.glassfish.jersey.containers</groupId>
-      <artifactId>jersey-container-servlet</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.glassfish.jersey.containers</groupId>
-      <artifactId>jersey-container-servlet-core</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.apache.mesos</groupId>
       <artifactId>mesos</artifactId>
       <classifier>${mesos.classifier}</classifier>
@@ -332,6 +314,7 @@
     <dependency>
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-tags_${scala.binary.version}</artifactId>
+      <version>${dep.project.version}</version>
     </dependency>
   </dependencies>
   <build>
@@ -449,5 +432,16 @@
       </build>
     </profile>
   </profiles>
-
+  <distributionManagement>
+    <repository>
+      <id>releases</id>
+      <name>Releases</name>
+      <url>http://hfnexus01.b-next.de/nexus/content/repositories/releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>snapshots</id>
+      <name>Snapshots</name>
+      <url>http://hfnexus01.b-next.de/nexus/content/repositories/snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
 </project>

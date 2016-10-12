@@ -16,9 +16,6 @@
  */
 package org.apache.spark.status.api.v1
 
-import javax.ws.rs._
-import javax.ws.rs.core.MediaType
-
 import org.apache.spark.SparkException
 import org.apache.spark.scheduler.StageInfo
 import org.apache.spark.status.api.v1.StageStatus._
@@ -27,12 +24,10 @@ import org.apache.spark.ui.SparkUI
 import org.apache.spark.ui.jobs.JobProgressListener
 import org.apache.spark.ui.jobs.UIData.StageUIData
 
-@Produces(Array(MediaType.APPLICATION_JSON))
-private[v1] class OneStageResource(ui: SparkUI) {
 
-  @GET
-  @Path("")
-  def stageData(@PathParam("stageId") stageId: Int): Seq[StageData] = {
+private[v1] class OneStageResource(ui: SparkUI) {
+  
+  def stageData( stageId: Int): Seq[StageData] = {
     withStage(stageId) { stageAttempts =>
       stageAttempts.map { stage =>
         AllStagesResource.stageUiToStageData(stage.status, stage.info, stage.ui,
@@ -40,24 +35,20 @@ private[v1] class OneStageResource(ui: SparkUI) {
       }
     }
   }
-
-  @GET
-  @Path("/{stageAttemptId: \\d+}")
+  
   def oneAttemptData(
-      @PathParam("stageId") stageId: Int,
-      @PathParam("stageAttemptId") stageAttemptId: Int): StageData = {
+      stageId: Int,
+      stageAttemptId: Int): StageData = {
     withStageAttempt(stageId, stageAttemptId) { stage =>
       AllStagesResource.stageUiToStageData(stage.status, stage.info, stage.ui,
         includeDetails = true)
     }
   }
-
-  @GET
-  @Path("/{stageAttemptId: \\d+}/taskSummary")
+  
   def taskSummary(
-      @PathParam("stageId") stageId: Int,
-      @PathParam("stageAttemptId") stageAttemptId: Int,
-      @DefaultValue("0.05,0.25,0.5,0.75,0.95") @QueryParam("quantiles") quantileString: String)
+  stageId: Int,
+  stageAttemptId: Int,
+  quantileString: String)
   : TaskMetricDistributions = {
     withStageAttempt(stageId, stageAttemptId) { stage =>
       val quantiles = quantileString.split(",").map { s =>
@@ -65,21 +56,19 @@ private[v1] class OneStageResource(ui: SparkUI) {
           s.toDouble
         } catch {
           case nfe: NumberFormatException =>
-            throw new BadParameterException("quantiles", "double", s)
         }
       }
-      AllStagesResource.taskMetricDistributions(stage.ui.taskData.values, quantiles)
     }
+    null
   }
 
-  @GET
-  @Path("/{stageAttemptId: \\d+}/taskList")
+
   def taskList(
-      @PathParam("stageId") stageId: Int,
-      @PathParam("stageAttemptId") stageAttemptId: Int,
-      @DefaultValue("0") @QueryParam("offset") offset: Int,
-      @DefaultValue("20") @QueryParam("length") length: Int,
-      @DefaultValue("ID") @QueryParam("sortBy") sortBy: TaskSorting): Seq[TaskData] = {
+     stageId: Int,
+     stageAttemptId: Int,
+     offset: Int,
+     length: Int,
+     sortBy: TaskSorting): Seq[TaskData] = {
     withStageAttempt(stageId, stageAttemptId) { stage =>
       val tasks = stage.ui.taskData.values.map{AllStagesResource.convertTaskData}.toIndexedSeq
         .sorted(OneStageResource.ordering(sortBy))
@@ -92,7 +81,7 @@ private[v1] class OneStageResource(ui: SparkUI) {
   private def withStage[T](stageId: Int)(f: Seq[StageStatusInfoUi] => T): T = {
     val stageAttempts = findStageStatusUIData(ui.jobProgressListener, stageId)
     if (stageAttempts.isEmpty) {
-      throw new NotFoundException("unknown stage: " + stageId)
+      throw new Exception("unknown stage: " + stageId)
     } else {
       f(stageAttempts)
     }
@@ -130,8 +119,7 @@ private[v1] class OneStageResource(ui: SparkUI) {
             f(stage)
           case None =>
             val stageAttempts = attempts.map { _.info.attemptId }
-            throw new NotFoundException(s"unknown attempt for stage $stageId.  " +
-              s"Found attempts: ${stageAttempts.mkString("[", ",", "]")}")
+            throw new Exception()
         }
     }
   }

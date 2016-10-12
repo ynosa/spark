@@ -16,16 +16,11 @@
 */
 package org.apache.spark.status.api.v1
 
-import javax.ws.rs.{GET, PathParam, Produces}
-import javax.ws.rs.core.MediaType
-
 import org.apache.spark.ui.SparkUI
 import org.apache.spark.ui.exec.ExecutorsPage
 
-@Produces(Array(MediaType.APPLICATION_JSON))
 private[v1] class ExecutorListResource(ui: SparkUI) {
-
-  @GET
+  
   def executorList(): Seq[ExecutorSummary] = {
     val listener = ui.executorsListener
     listener.synchronized {
